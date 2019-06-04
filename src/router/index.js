@@ -369,6 +369,29 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/proTask',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'proTaskManage',
+    meta: {
+      title: '任务处理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/proTask/list'),
+        name: 'proTaskList',
+        meta: {
+          perms: ['GET /admin/proTask/list', 'GET /admin/pro/detailOnlyPro', 'POST /admin/proTask/delete'],
+          title: '任务列表',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
     path: '/promotion',
     component: Layout,
     redirect: 'noredirect',

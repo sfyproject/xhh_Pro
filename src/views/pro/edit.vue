@@ -52,6 +52,53 @@
       </el-form>
     </el-card>
 
+    <el-card class="box-card">
+      <h3>项目任务</h3>
+      <el-button :plain="true" type="primary" @click="handleTaskShow">添加</el-button>
+      <el-table :data="tasks">
+        <el-table-column property="sketch" label="任务简述"/>
+        <el-table-column property="content" label="任务内容"/>
+        <el-table-column property="ratio" label="权重"/>
+        <el-table-column property="deadline" label="截止期限"/>
+        <el-table-column property="remark" label="备注"/>
+        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="handleTaskDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-dialog :visible.sync="taskVisiable" title="设置商品参数">
+        <el-form
+          ref="taskForm"
+          :model="taskForm"
+          status-icon
+          label-position="left"
+          label-width="100px"
+          style="width: 400px; margin-left:50px;">
+          <el-form-item label="任务简述" prop="sketch">
+            <el-input v-model="taskForm.sketch"/>
+          </el-form-item>
+          <el-form-item label="任务内容" prop="content">
+            <el-input v-model="taskForm.content"/>
+          </el-form-item>
+          <el-form-item label="权重" prop="ratio">
+            <el-input v-model="taskForm.ratio"/>
+          </el-form-item>
+          <el-form-item label="截止期限" prop="deadline">
+            <el-date-picker v-model="taskForm.deadline" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 100%;"/>
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="taskForm.remark"/>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="taskVisiable = false">取消</el-button>
+          <el-button type="primary" @click="handleTaskAdd">确定</el-button>
+        </div>
+      </el-dialog>
+    </el-card>
+
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
       <el-button type="primary" @click="handlePublish">更新</el-button>
@@ -107,7 +154,7 @@
 
 <script>
 import { editPro, detailPro } from '@/api/pro'
-import { createStorage, uploadPath } from '@/api/storage'
+import { createStorage } from '@/api/storage'
 import Editor from '@tinymce/tinymce-vue'
 import { MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
@@ -118,24 +165,10 @@ export default {
 
   data() {
     return {
-      uploadPath,
-      newKeywordVisible: false,
-      newKeyword: '',
-      number: '',
-      keywords: [],
-      categoryList: [],
-      brandList: [],
-      pro: { deadline: '' },
-      specVisiable: false,
-      specForm: { specification: '', value: '', picUrl: '' },
-      multipleSpec: false,
-      specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
-      productVisiable: false,
-      productForm: { id: 0, specifications: [], price: 0.00, number: 0, url: '' },
-      products: [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '' }],
-      attributeVisiable: false,
-      attributeForm: { attribute: '', value: '' },
-      attributes: [],
+      pro: { },
+      tasks: [],
+      taskVisiable: false,
+      taskForm: { },
       editorInit: {
         language: 'zh_CN',
         convert_urls: false,
@@ -175,24 +208,47 @@ export default {
 
       const proId = this.$route.query.id
       detailPro(proId).then(response => {
-        this.pro = response.data.data
-        this.deadline = response.data.data.deadline
+        this.pro = response.data.data.data.proContent
+        this.tasks = response.data.data.data.proTasks
       })
     },
-    // handleCategoryChange(value) {
-    //   this.goods.categoryId = value[value.length - 1]
-    // },
     handleCancel: function() {
       this.$router.push({ path: '/pro/list' })
     },
+    /*
+     * @author: sunfy 2019-06-03 18:25:30
+     * 项目任务添加按钮事件
+     */
+    handleTaskShow() {
+      this.taskForm = {}
+      this.taskVisiable = true
+    },
+    /*
+     * @author: sunfy 2019-06-03 18:27:31
+     * 项目任务逐行删除按钮
+     */
+    handleTaskDelete(row) {
+      const index = this.tasks.indexOf(row)
+      this.tasks.splice(index, 1)
+    },
+    /*
+     * @author: sunfy 2019-06-03 18:23:07
+     * 项目任务弹框后点击确定按钮事件
+     */
+    handleTaskAdd() {
+      this.tasks.unshift(this.taskForm)
+      this.taskVisiable = false
+    },
+    /*
+     * @author: sunfy 2019-06-03 19:00:50
+     * 页面保存事件
+     */
     handlePublish: function() {
-      // const finalPro = {
-      //   pro: this.pro,
-      //   specifications: this.specifications,
-      //   products: this.products,
-      //   attributes: this.attributes
-      // }
-      editPro(this.pro).then(response => {
+      const finalPro = {
+        proContent: this.pro,
+        proTasks: this.tasks
+      }
+      editPro(finalPro).then(response => {
         this.$notify.success({
           title: '成功',
           message: '更新成功'
