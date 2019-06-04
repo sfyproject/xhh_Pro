@@ -23,7 +23,6 @@
         </template>
       </el-table-column>
       <el-table-column align="center" min-width="100" label="项目名称" prop="proProject"/>
-      <el-table-column align="center" min-width="100" label="项目名称" prop="proNum"/>
       <el-table-column align="center" min-width="100" label="任务简述" prop="sketch"/>
       <el-table-column align="center" min-width="60" label="任务内容" prop="content"/>
       <el-table-column align="center" min-width="60" label="权重" prop="ratio"/>
