@@ -22,23 +22,19 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="100" label="项目名称" prop="proProject"/>
-      <el-table-column align="center" min-width="100" label="任务简述" prop="sketch"/>
-      <el-table-column align="center" min-width="160" label="任务内容" prop="content"/>
-      <el-table-column align="center" min-width="30" label="权重" prop="ratio"/>
-      <el-table-column align="center" min-width="40" label="截止期限" prop="deadline"/>
-      <el-table-column align="center" min-width="40" label="实施者" prop="createrid"/>
-      <el-table-column align="center" label="任务状态" prop="status">
+      <el-table-column align="center" min-width="100" label="人员名称" prop="user"/>
+      <el-table-column align="center" min-width="100" label="联系方式" prop="phone"/>
+      <el-table-column align="center" min-width="60" label="身份信息" prop="idcard"/>
+      <!-- <el-table-column align="center" label="账号状态" prop="status">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status === '0' ? '1' : '2' ">{{ scope.row.status === '0' ? '准备中' : '进行中' }}</el-tag>
+          <el-tag :type="scope.row.status ? 'success' : 'error' ">{{ status ? '禁用' : '启用' }}</el-tag>
         </template>
-      </el-table-column>
-      <el-table-column align="center" min-width="60" label="备注" prop="remark"/>
+      </el-table-column> -->
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <!-- <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button> -->
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,12 +67,12 @@
 </style>
 
 <script>
-import { listProTask, deleteProTask } from '@/api/proTask'
+import { listProUserPay, deleteProUserPay } from '@/api/proUserPay'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: 'TasksList',
+  name: 'UserPayList',
   components: { BackToTop, Pagination },
   data() {
     return {
@@ -102,8 +98,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listProTask(this.listQuery).then(response => {
-        console.log(response.data.data)
+      listProUserPay(this.listQuery).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.total
         this.listLoading = false
@@ -118,13 +113,17 @@ export default {
       this.getList()
     },
     handleCreate() {
-      this.$router.push({ path: '/proTask/create' })
+      this.$router.push({ path: '/proUserPay/create' })
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/proTask/edit', query: { id: row.id }})
+      this.$router.push({ path: '/proUserPay/edit', query: { id: row.id }})
+    },
+    showDetail(detail) {
+      this.goodsDetail = detail
+      this.detailDialogVisible = true
     },
     handleDelete(row) {
-      deleteProTask(row).then(response => {
+      deleteProUserPay(row).then(response => {
         this.$notify.success({
           title: '成功',
           message: '删除成功'

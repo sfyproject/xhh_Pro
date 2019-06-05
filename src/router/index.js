@@ -372,26 +372,78 @@ export const asyncRouterMap = [
   {
     path: '/proTask',
     component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'proTaskManage',
-    meta: {
-      title: '任务处理',
-      icon: 'chart'
-    },
     children: [
       {
         path: 'list',
         component: () => import('@/views/proTask/list'),
         name: 'proTaskList',
         meta: {
-          perms: ['GET /admin/proTask/list', 'GET /admin/pro/detailOnlyPro', 'POST /admin/proTask/delete'],
           title: '任务列表',
-          noCache: true
+          icon: 'icon'
         }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/proTask/edit'),
+        name: 'proTaskEdit',
+        meta: {
+          perms: ['GET /admin/proTask/detail', 'POST /admin/proTask/update', 'POST /admin/proTask/catAndBrand'],
+          title: '任务编辑',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
+  {
+    path: '/proUserPay',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/proUserPay/list'),
+        name: 'proUserPayList',
+        meta: {
+          title: '工薪列表',
+          icon: 'icon'
+        }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/proUserPay/edit'),
+        name: 'proUserPayEdit',
+        meta: {
+          perms: ['GET /admin/proUserPay/detail', 'POST /admin/proUserPay/update', 'POST /admin/proUserPay/catAndBrand'],
+          title: '任务编辑',
+          noCache: true
+        },
+        hidden: true
+      }
+    ]
+  },
+  // {
+  //   path: '/proUserPay',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   alwaysShow: true,
+  //   name: 'proUserPayManage',
+  //   meta: {
+  //     title: '工薪管理',
+  //     icon: 'chart'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/proUserPay/list'),
+  //       name: 'proUserPayList',
+  //       meta: {
+  //         perms: ['GET /admin/proUserPay/list', 'POST /admin/proUserPay/delete'],
+  //         title: '工薪列表',
+  //         noCache: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/promotion',
     component: Layout,
